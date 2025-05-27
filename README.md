@@ -33,7 +33,6 @@ Global Chat Suite is a lightweight, peer-to-peer chat and file-sharing tool desi
 ---
 
 ## License
-
 This project is licensed under the **GNU GPL v3.0**.  
 Feel free to use, modify, and share it — just keep it open and free!
 
