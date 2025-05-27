@@ -1,6 +1,6 @@
 # Global Chat Suite
 
-Global Chat Suite is a lightweight, peer-to-peer chat and file-sharing tool designed with privacy and simplicity in mind. It lets you connect directly with friends or colleagues over TCP, exchanging messages and files without relying on any central servers — all wrapped in cleverly disguised traffic to help keep your communication discreet.
+Global Chat Suite is a lightweight, peer-to-peer chat and file-sharing tool designed with privacy and simplicity in mind. It lets you connect directly with friends or colleagues over TCP, exchanging messages and files without relying on any central servers — all wrapped in fake traffic to help keep your communication discreet.
 
 ---
 
