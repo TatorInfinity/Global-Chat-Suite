@@ -37,10 +37,4 @@ Global Chat Suite is a lightweight, peer-to-peer chat and file-sharing tool desi
 This project is licensed under the **GNU GPL v3.0**.  
 Feel free to use, modify, and share it — just keep it open and free!
 
----
-
 If you have questions or want to contribute, open an issue or submit a pull request. Happy chatting!
-
----
-
-*Built with Python to provide simple, private, and direct communication.*
