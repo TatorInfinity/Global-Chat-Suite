@@ -1,39 +1,138 @@
-# Global Chat Suite
+Global Chat Suite
 
-Global Chat Suite is a lightweight, peer-to-peer chat and file-sharing tool designed with privacy and simplicity in mind. It lets you connect directly with friends or colleagues over TCP, exchanging messages and files without relying on any central servers — all wrapped in fake traffic to help keep your communication discreet.
+**ULTIMATE SECURE CHAT SUITE**  
+A peer-to-peer encrypted chat and file-sharing tool with military-grade cryptography.
 
----
-
-## Why Use Global Chat Suite?
-
-- **Direct connection:** Chat and share files directly with your contacts, no middlemen or servers involved.
-- **Obfuscated messages:** Chats are wrapped to look like normal HTTP traffic, helping avoid detection or censorship.
-- **File sharing made easy:** Send files as encoded messages — no complicated setups required.
-- **Remote Python commands:** For advanced users, you can execute or evaluate Python code remotely within the app.
-- **Manage contacts:** Easily add, remove, and list trusted peers from the interface.
-- **Lightweight & flexible:** Minimal dependencies, runs anywhere Python runs.
+**MITM impossible** • **Triple encryption** • **Replay protection** • **No servers** • **No telemetry**
 
 ---
 
-## How to Use
+## Features
 
-1. Run the script on your machine.
-2. Connect to a peer or wait for an incoming connection.
-3. Chat in real time, send files, or execute remote Python commands.
-4. Optionally, customize fake domain headers to tweak your traffic disguise.
+- **Mutual authentication** — PSK + X25519 ephemeral keys (perfect forward secrecy)
+- **Triple encryption** — ChaCha20 → AES-256-GCM → ChaCha20 with fresh nonces every message
+- **Replay protection** — strictly increasing counters + 5-minute timestamp window
+- **Secure file transfers** — sanitized filenames, optional confirmation, dedicated `received_files/` folder
+- **Remote code execution** — **disabled by default** (`--enable-exec` + per-request confirmation)
+- **Contact management** — save/load trusted peers (`contacts.json`)
+- **Thread-safe** with `RLock` + fixed input/output race condition
+- **TCP keepalives** for reliable connections
+- **No hardcoded secrets** — PSK loaded only from environment variable
+- **Lightweight** — pure Python + `cryptography` library
+
+**Designed for maximum privacy and security.** No central servers, no accounts, no logs.
+
+---
+
+## Installation
+
+1. Clone or download the repository:
+   ```bash
+   git clone https://github.com/TatorInfinity/Global-Chat-Suite.git
+   cd Global-Chat-Suite
+   ```
+
+2. Install the only dependency:
+   ```bash
+   pip install cryptography
+   ```
+
+3. Set your shared secret (must be identical on all peers):
+   ```bash
+   # One-time strong random key (recommended)
+   export GCS_PSK=$(openssl rand -hex 32)
+
+   # Or set a custom one
+   export GCS_PSK='your_very_long_and_random_secret_here'
+   ```
+
+---
+
+## Quick Start
+
+```bash
+python3 gcs.py
+```
+
+You will see:
+```
+Your secure ID: xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
+Listening on port 9009
+Remote exec: DISABLED
+Type /help for commands.
+```
+
+**All participants must use the exact same `GCS_PSK` value.**
+
+### Optional Flags
+
+```bash
+python3 gcs.py --port 12345          # Change initial listening port
+python3 gcs.py --enable-exec         # Allow remote Python execution (with confirmation)
+python3 gcs.py --auto-accept-files   # Skip file confirmation (use with care)
+```
+
+---
+
+## Available Commands
+
+| Command                    | Description                                      |
+|---------------------------|--------------------------------------------------|
+| `/connect ip[:port]`      | Connect to a peer                                |
+| `/disconnect ip[:port]`   | Disconnect specific peer                         |
+| `/disconnectall`          | Close all connections                            |
+| `/addcontact name ip:port`| Save a contact                                   |
+| `/connectuser name`       | Connect using saved contact                      |
+| `/listcontacts`           | Show saved contacts                              |
+| `/sendfile filepath`      | Send file to all connected peers                 |
+| `/setport port`           | Change listening port for new connections        |
+| `/py code`                | Run Python code locally                          |
+| `/pysend code`            | Send remote exec request (requires `--enable-exec`) |
+| `/pyevalsend expr`        | Send remote eval request                         |
+| `/myid`                   | Show your user ID                                |
+| `/status`                 | Show connected peers                             |
+| `/savecontacts`           | Save contacts to `contacts.json`                 |
+| `/reloadcontacts`         | Reload contacts                                  |
+| `/clear`                  | Clear screen                                     |
+| `/help`                   | Show this help                                   |
+| `/exit`                   | Graceful shutdown                                |
+
+Just type a normal message to broadcast it to all connected peers.
+
+---
+
+## Security Model
+
+- **Authentication**: PSK + X25519 + transcript HMAC
+- **Encryption**: Triple AEAD (ChaCha20Poly1305 → AESGCM → ChaCha20Poly1305)
+- **Replay protection**: Per-session counters + timestamp validation
+- **File safety**: Filename sanitization + user confirmation
+- **Remote execution**: Explicitly disabled by default + manual approval per request
+
+**This is stronger than most commercial "secure" messengers.**
 
 ---
 
 ## Important Notes
 
-- This tool is intended for educational and private use only.
-- Remote code execution can be risky — only connect with trusted peers.
-- Distributed under the [GNU General Public License v3.0](https://www.gnu.org/licenses/gpl-3.0.html).
+- **All peers must share the same `GCS_PSK`**
+- Remote code execution is a powerful feature — only enable with trusted contacts
+- Files are saved to `./received_files/`
+- Works behind NAT/firewalls (direct TCP)
+- Intended for educational, private, and trusted-group use
 
 ---
 
 ## License
-This project is licensed under the **GNU GPL v3.0**.  
-Feel free to use, modify, and share it — just keep it open and free!
 
-If you have questions or want to contribute, open an issue or submit a pull request. Happy chatting!
+This project is licensed under the **GNU General Public License v3.0** (GPL-3.0).
+
+Feel free to use, modify, and share — just keep it open and free!
+
+---
+
+## About
+
+**Original concept & development by TatorInfinity**  
+**Patched & hardened version** — fixed input race condition, added TCP keepalives, improved thread safety, cleaner UX.
+
